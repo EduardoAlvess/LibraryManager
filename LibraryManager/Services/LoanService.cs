@@ -17,7 +17,10 @@ namespace LibraryManager.Services
 
         public string RentBook(Loan loan)
         {
-            if (_userService.CanUserRentBook(loan.UserId, loan.BookId) && _bookService.IsBookavailable(loan.BookId))
+            var canUserRentBook = _userService.CanUserRentBook(loan.UserId, loan.BookId);
+            var isBookAvailable = _bookService.IsBookAvailable(loan.BookId);
+
+            if (canUserRentBook && isBookAvailable)
             {
                 loan.LoanDate = DateTime.Now;
                 loan.ReturnDate = DateTime.Now.AddMonths(1);

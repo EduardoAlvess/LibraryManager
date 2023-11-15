@@ -35,7 +35,7 @@ namespace LibraryManager.Services
             return book;
         }
 
-        public bool IsBookavailable(int bookId)
+        public bool IsBookAvailable(int bookId)
         {
             int stock = _db.GetBookStock(bookId);
 
