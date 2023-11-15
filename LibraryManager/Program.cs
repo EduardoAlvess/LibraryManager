@@ -12,6 +12,9 @@ namespace LibraryManager
             builder.Services.AddSwaggerGen();
 
             builder.Services.AddSingleton<IBookService, BookService>();
+            builder.Services.AddSingleton<IUserService, UserService>();
+            builder.Services.AddSingleton<ILoanService, LoanService>();
+
             builder.Services.AddSingleton<IDbService, DapperDbService>();
 
             var app = builder.Build();

@@ -7,5 +7,6 @@
         public string Author { get; set; }
         public string ISBN { get; set; }
         public int ReleaseYear { get; set; }
+        public int Stock { get; set; }
     }
 }

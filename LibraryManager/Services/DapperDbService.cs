@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using LibraryManager.Models;
 using MySqlConnector;
+using System.Net;
 
 namespace LibraryManager.Services
 {
@@ -17,12 +18,13 @@ namespace LibraryManager.Services
                     Title = book.Title,
                     Author = book.Author,
                     ISBN = book.ISBN,
-                    ReleaseYear = book.ReleaseYear
+                    ReleaseYear = book.ReleaseYear,
+                    Stock = book.Stock
                 };
 
-                const string query = "INSERT INTO Books (Title, Author, ISBN, ReleaseYear) VALUES (@Title, @Author, @ISBN, @ReleaseYear)";
+                const string query = "INSERT INTO Books (Title, Author, ISBN, ReleaseYear, Stock) VALUES (@Title, @Author, @ISBN, @ReleaseYear, @Stock)";
 
-                var result = dbConnection.Execute(query, parameters);
+                dbConnection.Execute(query, parameters);
             }
         }
 
@@ -37,7 +39,7 @@ namespace LibraryManager.Services
 
                 const string query = "DELETE FROM Books WHERE Id = @Id";
 
-                var result = dbConnection.Execute(query, paremeters);
+                dbConnection.Execute(query, paremeters);
             }
         }
 
@@ -69,6 +71,113 @@ namespace LibraryManager.Services
                 var book = dbConnection.QuerySingleOrDefault<Book>(query, paremeters);
 
                 return book;
+            }
+        }
+
+        public void CreateUser(User user)
+        {
+            using (var dbConnection = new MySqlConnection(_connectionString))
+            {
+                var paremeters = new
+                {
+                    Name = user.Name,
+                    Email = user.Email
+                };
+
+                const string query = "INSERT INTO Users (Name, Email) VALUES (@Name, @Email)";
+
+                dbConnection.Execute(query, paremeters);
+            }
+        }
+
+        public void RentBook(Loan loan)
+        {
+            using (var dbConnection = new MySqlConnection(_connectionString))
+            {
+                var paremeters = new
+                {
+                    UserId = loan.UserId,
+                    BookId = loan.BookId,
+                    LoanDate = loan.LoanDate,
+                    ReturnDate = loan.ReturnDate,
+                };
+
+                const string query = "INSERT INTO Loans (UserId, BookId, LoanDate, ReturnDate) VALUES (@UserId, @BookId, @LoanDate, @ReturnDate)";
+
+                dbConnection.Execute(query, paremeters);
+            }
+
+            ChangeBookStock(loan.BookId, -1);
+        }
+
+        public void ReturnBook(int bookId)
+        {
+            using (var dbConnection = new MySqlConnection(_connectionString))
+            {
+                var paremeters = new
+                {
+                    BookId = bookId
+                };
+
+                const string query = "DELETE FROM Loans WHERE BookId = @BookId";
+
+                dbConnection.Execute(query, paremeters);
+            }
+
+            ChangeBookStock(bookId, 1);
+        }
+
+        public int GetBookStock(int bookId)
+        {
+            using (var dbConnection = new MySqlConnection(_connectionString))
+            {
+                var paremeters = new
+                {
+                    BookId = bookId,
+                };
+
+                const string query = "SELECT Stock FROM Books WHERE Id = @BookId";
+
+                int stock = dbConnection.QuerySingleOrDefault<int>(query, paremeters);
+
+                return stock;
+            }
+        }
+
+        private void ChangeBookStock(int bookId, int quantity)
+        {
+            int stock = GetBookStock(bookId);
+
+            using (var dbConnection = new MySqlConnection(_connectionString))
+            {
+                var paremeters = new
+                {
+                    BookId = bookId,
+                    Stock = stock + quantity,
+                };
+
+                const string query = "UPDATE Books SET Stock = @Stock WHERE Id = @BookId";
+
+                dbConnection.Execute(query, paremeters);
+            }
+        }
+
+        public List<Loan> GetAllUserLoans(int userId)
+        {
+            using (var dbConnection = new MySqlConnection(_connectionString))
+            {
+                var paremeters = new
+                {
+                    UserId = userId,
+                };
+
+                const string query = "SELECT * FROM Loans WHERE UserId = @UserId";
+
+                var result = dbConnection.QueryAsync<Loan>(query, paremeters).Result;
+
+                var loans = result.ToList();
+
+                return loans;
             }
         }
     }

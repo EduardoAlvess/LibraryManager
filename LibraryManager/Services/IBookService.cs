@@ -8,5 +8,6 @@ namespace LibraryManager.Services
         Book GetBookById(int id);
         void CreateBook(Book book);
         void DeleteBookById(int id);
+        bool IsBookavailable(int bookId);
     }
 }

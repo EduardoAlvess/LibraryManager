@@ -20,9 +20,10 @@ namespace LibraryManager.Controllers
         {
             var bookToCreate = new Book()
             {
-                Title = book.Title,
-                Author = book.Author,
                 ISBN = book.ISBN,
+                Title = book.Title,
+                Stock = book.Stock,
+                Author = book.Author,
                 ReleaseYear = book.ReleaseYear
             };
 

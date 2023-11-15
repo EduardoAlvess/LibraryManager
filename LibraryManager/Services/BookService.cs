@@ -1,4 +1,5 @@
 ﻿using LibraryManager.Models;
+using MySqlConnector;
 
 namespace LibraryManager.Services
 {
@@ -32,6 +33,15 @@ namespace LibraryManager.Services
             var book = _db.GetBookById(id);
 
             return book;
+        }
+
+        public bool IsBookavailable(int bookId)
+        {
+            int stock = _db.GetBookStock(bookId);
+
+            if (stock <= 0) return false;
+
+            return true;
         }
     }
 }
