@@ -1,8 +1,6 @@
 ﻿using Dapper;
 using LibraryManager.Models;
 using MySqlConnector;
-using System.Buffers;
-using System.Data.SqlClient;
 
 namespace LibraryManager.Services
 {
