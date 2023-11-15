@@ -24,7 +24,7 @@ namespace LibraryManager.Services
 
                 const string query = "INSERT INTO Books (Title, Author, ISBN, ReleaseYear) VALUES (@Title, @Author, @ISBN, @ReleaseYear)";
 
-                var result = dbConnection.ExecuteAsync(query, parameters);
+                var result = dbConnection.Execute(query, parameters);
             }
         }
 
@@ -37,9 +37,9 @@ namespace LibraryManager.Services
                     Id = id
                 };
 
-                const string query = "DELETE * FROM Books WHERE Id = @Id";
+                const string query = "DELETE FROM Books WHERE Id = @Id";
 
-                var result = dbConnection.ExecuteAsync(query, paremeters);
+                var result = dbConnection.Execute(query, paremeters);
             }
         }
 
