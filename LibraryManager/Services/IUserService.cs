@@ -5,6 +5,6 @@ namespace LibraryManager.Services
     public interface IUserService
     {
         void CreateUser(User user);
-        bool CanUserRentBook(int userId);
+        bool CanUserRentBook(int userId, int bookId);
     }
 }
